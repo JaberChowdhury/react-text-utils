@@ -6,6 +6,7 @@ import MixedChartComponent from "~/components/MixedChart";
 import { Button } from "~/components/ui/button";
 import { Link } from "react-router";
 import { Textarea } from "~/components/ui/textarea";
+import CustomBox from "~/components/CustomBox";
 
 export default function Home() {
   // Motivational default text
@@ -39,9 +40,22 @@ export default function Home() {
           and beautiful charts.
         </p>
         <div className="flex flex-col md:flex-row gap-4 justify-center mt-6">
-          <Button asChild size="lg" className="w-full md:w-auto">
+          {/* <Button asChild size="lg" className="w-full md:w-auto">
             <Link to="/text-utils">Explore Text Utils</Link>
-          </Button>
+          </Button> */}
+          <CustomBox
+            backgroundColor="black"
+            borderColor="red"
+            style={{
+              width: "250px",
+              height: "50px",
+              padding: "1px",
+              color: "white",
+              fontWeight: "bold",
+            }}
+          >
+            <Link to="/text-utils">Explore Text Utils</Link>
+          </CustomBox>
           <Button
             asChild
             variant="outline"
@@ -52,6 +66,7 @@ export default function Home() {
           </Button>
         </div>
       </div>
+
       <div className="w-full max-w-2xl mb-10 flex justify-center items-center">
         {playground ? (
           <Textarea

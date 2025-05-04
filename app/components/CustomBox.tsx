@@ -1,20 +1,78 @@
 import React from "react";
 
-export type propsType = {
+export type CustomBoxProps = React.HTMLAttributes<HTMLDivElement> & {
   children: React.ReactNode;
+  borderColor: string;
+  backgroundColor: string;
 };
-const CustomBox = ({ children }: propsType) => {
+
+const generateWavyClipPath = (): string => {
+  const segments = 12;
+  const variation = 3;
+  const rand = (base: number) => base + (Math.random() * 2 - 1) * variation; // base ± variation
+
+  const top = Array.from({ length: segments + 1 }, (_, i) => {
+    const x = (i * 100) / segments;
+    const y = i % 2 === 0 ? rand(0) : rand(variation);
+    return `${x}% ${y}%`;
+  });
+
+  const right = Array.from({ length: segments }, (_, i) => {
+    const y = ((i + 1) * 100) / segments;
+    const x = i % 2 === 0 ? 100 - rand(0) : 100 - rand(variation);
+    return `${x}% ${y}%`;
+  });
+
+  const bottom = Array.from({ length: segments + 1 }, (_, i) => {
+    const x = 100 - (i * 100) / segments;
+    const y = i % 2 === 0 ? 100 - rand(0) : 100 - rand(variation);
+    return `${x}% ${y}%`;
+  });
+
+  const left = Array.from({ length: segments }, (_, i) => {
+    const y = 100 - ((i + 1) * 100) / segments;
+    const x = i % 2 === 0 ? rand(0) : rand(variation);
+    return `${x}% ${y}%`;
+  });
+
+  return `polygon(${[...top, ...right, ...bottom, ...left].join(", ")})`;
+};
+
+const CustomBox = ({
+  children,
+  style,
+  borderColor,
+  backgroundColor,
+  ...rest
+}: CustomBoxProps) => {
+  const clipPath = React.useMemo(() => generateWavyClipPath(), []);
+
   return (
     <div
+      {...rest}
       style={{
-        clipPath:
-          "polygon(0% 2%, 10% 0%, 20% 2%, 30% 0%, 40% 2%, 50% 0%, 60% 2%, 70% 0%, 80% 2%, 90% 0%, 100% 2%, 100% 10%, 98% 20%, 100% 30%, 98% 40%, 100% 50%, 98% 60%, 100% 70%, 98% 80%, 100% 90%, 98% 98%, 100% 100%, 90% 98%, 80% 100%, 70% 98%, 60% 100%, 50% 98%, 40% 100%, 30% 98%, 20% 100%, 10% 98%, 0% 100%, 2% 90%, 0% 80%, 2% 70%, 0% 60%, 2% 50%, 0% 40%, 2% 30%, 0% 20%, 2% 10%, 0% 2%)",
-        background: "#f8e1c4",
-        height: "300px",
+        clipPath,
+        background: borderColor,
+        padding: "8px",
         width: "300px",
+        height: "300px",
+        boxSizing: "border-box",
+        ...style,
       }}
     >
-      {children}
+      <div
+        style={{
+          clipPath,
+          background: backgroundColor,
+          width: "100%",
+          height: "100%",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        {children}
+      </div>
     </div>
   );
 };
